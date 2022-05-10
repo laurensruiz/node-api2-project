@@ -3,7 +3,7 @@
  const Post = require('./posts-model')
  const router = express.Router()
 
- router.get('/', (req, res) =>{
+ router.get('', (req, res) =>{
     Post.find() // http get :5000/api/posts --verbose
     .then(postFound => {
         //throw new Error('ouch!') to test
@@ -13,7 +13,7 @@
         res.status(500).json({
             message: "The posts information could not be retrieved",
             err: err.message,
-            stack: err.stack
+            stack: err.stack,
         })
     })
  })
