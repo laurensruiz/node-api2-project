@@ -40,7 +40,28 @@
  })
 
  router.post('/', (req, res) =>{
-
+    const {title, contents} = req.body
+    if(!title || !contents){
+        res.status(400).json({ //user error
+            message: "Please provide title and contents for the post" 
+        })
+    } else {
+        Post.insert({title, contents})
+        .then(({ id }) => { //destructure it by {} so we can use it
+            //console.log(id) returns ID
+            return Post.findById(id) //return a promise then chain another .then
+        })
+        .then(newPost => {
+            res.status(201).json(newPost) //creates the new post
+        })
+        .catch(err => { //server error
+            res.status(500).json({
+                message: "There was an error while saving the post to the database" ,
+                err: err.message,
+                stack: err.stack,
+            })
+        })
+    }
  })
 
  router.delete('/:id', (req, res) =>{
