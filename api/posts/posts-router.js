@@ -112,7 +112,10 @@
                 }
             }) 
             .then (post =>{
-                res.json(post)
+                if(post){
+                    res.json(post)
+                }
+                
             })
             .catch(err => { //server error
             res.status(500).json({
@@ -124,8 +127,24 @@
         }
  })
 
- router.get('/:id/messages', (req, res) =>{
-     
+ router.get('/:id/comments', async (req, res) =>{
+     try{
+        const selectedId = await Post.findById(req.params.id)
+        if(!selectedId){
+            res.status(404).json({
+                message: "The post with the specified ID does not exist",
+            })
+        } else {
+            const comments = await Post.findPostComments(req.params.id)
+            res.json(comments)
+        }
+     } catch (err) {
+        res.status(500).json({
+            message: "The comments information could not be retrieved" ,
+           err: err.message,
+           stack: err.stack
+       })
+    }
  })
 
  
