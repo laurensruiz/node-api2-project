@@ -64,8 +64,26 @@
     }
  })
 
- router.delete('/:id', (req, res) =>{
-     
+ router.delete('/:id', async (req, res) =>{
+     try{
+        const selectedId = await Post.findById(req.params.id)
+        if(!selectedId){
+            res.status(404).json({
+                message: "The post with the specified ID does not exist",
+            })
+        } else {
+            // const numberOfDeletedPost = await Post.remove(req.params.id) //check the function
+            // console.log(numberOfDeletedPost)
+            await Post.remove(req.params.id)
+            res.json(selectedId) // check readme, it says to return deleted obj
+        }
+     } catch (err) {
+         res.status(500).json({
+            message: "The post could not be removed" ,
+            err: err.message,
+            stack: err.stack
+        })
+     }
  })
 
  router.put('/:id', (req, res) =>{
